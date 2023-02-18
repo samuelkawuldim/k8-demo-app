@@ -1,4 +1,3 @@
-Deploy
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -6,48 +5,48 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: webapp 
+      app: webapp
   template:
     metadata:
       labels:
         app: webapp
     spec:
       containers:
-      - name: webapp
-        image: mongo-express:latest
-        resources:
-          limits:
-            memory: 100Mi
-            cpu: 0.5m
-        ports:
-        - containerPort: 8081
-      env:
-         - name: ME_CONFIG_MONGODB_ADMINUSERNAME
-          valueFrom:
-            secretKeyRef:
-              name: mongo-secret
-              key: mongo-user
-         - name: ME_CONFIG_MONGODB_ADMINPASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mongo-secret 
-              key: mongo-password
-         - name: ME_CONFIG_MONGODB_SERVER
-          valueFrom:
-            configMapKeyRef:
-              name: mongo-config
-              key: mongo-url
-              
-...
+        - name: webapp
+          image: mongo-express:latest
+          resources:
+            limits:
+              memory: 100Mi
+              cpu: 0.5m
+          ports:
+            - containerPort: 8081
+          env:
+            - name: ME_CONFIG_MONGODB_ADMINUSERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: mongo-user
+            - name: ME_CONFIG_MONGODB_ADMINPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: mongo-password
+            - name: ME_CONFIG_MONGODB_SERVER
+              valueFrom:
+                configMapKeyRef:
+                  name: mongo-config
+                  key: mongo-url
 
+---
 apiVersion: v1
 kind: Service
 metadata:
   name: webapp
 spec:
-  type:NodePort
+  type: NodePort
   selector:
     app: webapp
   ports:
-  - port: 8081
-    targetPort: 8081
+    - port: 8081
+      targetPort: 8081
+      nodePort: 30100
